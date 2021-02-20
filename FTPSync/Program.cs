@@ -58,22 +58,6 @@ namespace FTPSync
                 return;
             }
 
-            /*-----「新增」差异文件夹-----*/
-            var addedFolderList = _newFolderList.Except(_oldFolderList).ToList();
-            if (addedFolderList.Count > 0)
-            {
-                foreach (var folder in addedFolderList)
-                {
-                    string remoteFolderPath = folder.Replace(_basePath, "");
-                    var result = FtpClient.CreateDir(remoteFolderPath);
-
-                    if (result.Contains("successfully"))
-                    {
-                        Console.WriteLine($"{DateTime.Now} - create folder {remoteFolderPath} OK.");
-                    }
-                }
-            }
-
             /*-----「删除」差异文件夹-----*/
             var deletedFolderList = _oldFolderList.Except(_newFolderList).ToList();
             if (deletedFolderList.Count > 0)
@@ -90,17 +74,19 @@ namespace FTPSync
                 }
             }
 
-            /*-----「新增」差异文件-----*/
-            var addedFileList = _newFileList.Except(_oldFileList).ToDictionary(x => x.Key, x => x.Value);
-            if (addedFileList.Count > 0)
+            /*-----「新增」差异文件夹-----*/
+            var addedFolderList = _newFolderList.Except(_oldFolderList).ToList();
+            if (addedFolderList.Count > 0)
             {
-                foreach (var file in addedFileList)
+                foreach (var folder in addedFolderList)
                 {
-                    string localFilePath = file.Key;
-                    string remoteFilePath = localFilePath.Replace(_basePath, "");
-                    FtpClient.UploadFile(remoteFilePath, localFilePath);
+                    string remoteFolderPath = folder.Replace(_basePath, "");
+                    var result = FtpClient.CreateDir(remoteFolderPath);
 
-                    Console.WriteLine($"{DateTime.Now} - upload file {remoteFilePath} OK.");
+                    if (result.Contains("successfully"))
+                    {
+                        Console.WriteLine($"{DateTime.Now} - create folder {remoteFolderPath} OK.");
+                    }
                 }
             }
 
@@ -115,6 +101,20 @@ namespace FTPSync
                     FtpClient.DeleteFile(remoteFilePath);
 
                     Console.WriteLine($"{DateTime.Now} - delete file {remoteFilePath} OK.");
+                }
+            }
+
+            /*-----「新增」差异文件-----*/
+            var addedFileList = _newFileList.Except(_oldFileList).ToDictionary(x => x.Key, x => x.Value);
+            if (addedFileList.Count > 0)
+            {
+                foreach (var file in addedFileList)
+                {
+                    string localFilePath = file.Key;
+                    string remoteFilePath = localFilePath.Replace(_basePath, "");
+                    FtpClient.UploadFile(remoteFilePath, localFilePath);
+
+                    Console.WriteLine($"{DateTime.Now} - upload file {remoteFilePath} OK.");
                 }
             }
             
