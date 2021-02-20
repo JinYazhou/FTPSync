@@ -19,7 +19,7 @@ namespace FTPSync
         private static Dictionary<string, string> _oldFileList = new Dictionary<string, string>();
         private static Dictionary<string, string> _newFileList = new Dictionary<string, string>();
         private static Timer _syncTimer = null;
-        private static bool _workDown = true;
+        private static bool _workDone = true;
 
         static void Main()
         {
@@ -38,12 +38,12 @@ namespace FTPSync
 
         static void SyncEvent(object obj)
         {
-            if (!_workDown)
+            if (!_workDone)
             {
                 return;
             }
 
-            _workDown = false;
+            _workDone = false;
 
             _newFolderList = new List<string>();
             _newFileList = new Dictionary<string, string>();
@@ -53,7 +53,7 @@ namespace FTPSync
 
             if (_oldFileList.SequenceEqual(_newFileList))
             {
-                _workDown = true;
+                _workDone = true;
 
                 return;
             }
@@ -121,7 +121,7 @@ namespace FTPSync
             _oldFolderList = new List<string>(_newFolderList);
             _oldFileList = new Dictionary<string, string>(_newFileList);
 
-            _workDown = true;
+            _workDone = true;
 
             Console.WriteLine("Work is done!!!");
         }
