@@ -123,7 +123,7 @@ namespace FTPSync
 
             _workDown = true;
 
-            Console.WriteLine("All Work down!!!");
+            Console.WriteLine("Work is done!!!");
         }
 
         /// <summary>
